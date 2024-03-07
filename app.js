@@ -38,97 +38,6 @@ function generateString(length) {
     return result;
 }
 
-app.get('/test1', (req, res) => {
-    var count = 0
-    setInterval(() => {
-        count++
-        console.log("interval")   
-        console.log(count) 
-    }, 3000);
-});
-
-app.get('/auth/google', (req, res) => {
-  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=profile email`;
-  res.status(200).json({url})
-//   res.redirect(url);
-});
-
-app.get('/auth/google/callback', async (req, res) => {
-    const { code } = req.query;
-  
-    try {
-        const { data } = await axios.post('https://oauth2.googleapis.com/token', {
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            code,
-            redirect_uri: REDIRECT_URI,
-            grant_type: 'authorization_code',
-        });
-    
-        const { access_token, id_token } = data;
-    
-        const { data: profile } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
-            headers: { Authorization: `Bearer ${access_token}` },
-        });
-  
-        const ref_code = generateString(15);
-        
-        earnUserSchema.find({email : profile.email})
-        .then(result => {
-           if(result.length >= 1){
-                res.status(200).json({
-                    message : "user already exist",
-                    data : result,
-                    code
-                })
-           }else{
-            bcrypt.hash(profile.name, 10, (err, hash) => {
-            if(hash){
-                const user = new earnUserSchema({
-                    fullname : profile.name,
-                    password : hash,
-                    email : profile.email,
-                    phone : null,
-                    ref_code : ref_code,
-                })
-            
-                user.save()
-                .then(data => {
-                    const token = jwt.sign({ 
-                        fullname : profile.name,
-                        email : profile.email,}, "secret", {expiresIn : "12h"}
-                    )
-                    UserRef(req, res)
-
-                    res.status(200).json({
-                        message : "user created successfully",
-                        data,
-                        "access-token" : token
-                    })
-                    
-
-                })
-                .catch( err => {
-                    res.status(500).json({
-                        message: err
-                    })
-                })
-            }else{
-                res.status(500).json({
-                    message: "Something went wrong"
-                })
-            }
-                })
-            }
-        })
-
-    } 
-    catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({error})
-    }
-});
-
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header('Access-Control-Allow-Credentials', true);
@@ -144,7 +53,7 @@ app.use((req, res, next) => {
 
 app.get("/", (req, res) => {
     res.status(200).json({
-        message : "welcome to food delivery web app api",
+        message : "welcome to perfume delivery web app api",
         version : "1.0",
         author : "muhammadjamiu"
     })
