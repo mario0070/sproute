@@ -159,6 +159,21 @@ const getProductByOwner = (req, res) => {
     })
 }
 
+const productByCateory = (req, res) => {
+    productSchema.find({category : req.body.category})
+    .then(data => {
+         res.status(200).json({
+             message : "products by category fetched successfully",
+             data
+         })
+    })
+    .catch(err => {
+     res.status(500).json({
+         error : err
+     })
+    })
+}
+
 
 
 
@@ -169,4 +184,5 @@ module.exports = {
     searchProduct,
     deleteProduct,
     getProductByOwner,
+    productByCateory
 }
