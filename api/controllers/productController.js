@@ -5,6 +5,7 @@ const Formidable = require('formidable');
 const cloudinary = require("cloudinary");
 require('dotenv').config()
 const session = require('express-session');
+const cartSchema = require("../model/cartSchema");
 
 
 cloudinary.config({
@@ -177,18 +178,37 @@ const productByCateory = (req, res) => {
 }
 
 const storeSession = (req, res) => {
-    req.session.data = req.body.data;
-    res.status(200).json({
-        message : "session store successfully",
-        data :  req.session.data,
+    const carts = new cartSchema({
+        carts : req.body.data,
+        user : req.body.id,
+    })
+
+    carts.save()
+    .then(data => {
+        res.status(200).json({
+            message : "session save successfully",
+            data
+        })
+    })
+    .catch(error => {
+        res.status(200).json({
+            error
+        })
     })
 };
 
 const getSession = (req, res) => {
-    const data = req.session.data || [];
-    res.status(200).json({
-        message : "session fetch successfully",
-        data
+    cartSchema.find({user : req.body.id})
+    .then(data => {
+        res.status(200).json({
+            message : "session fetch successfully",
+            data
+        })
+    })
+    .catch(error => {
+        res.status(200).json({
+            error
+        })
     })
 };
 
