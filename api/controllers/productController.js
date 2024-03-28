@@ -181,6 +181,7 @@ const storeSession = (req, res) => {
     const carts = new cartSchema({
         carts : JSON.stringify(req.body.data),
         user : req.body.id,
+        quantity: req.body.quantity
     })
 
     carts.save()
