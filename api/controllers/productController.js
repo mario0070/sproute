@@ -179,7 +179,7 @@ const productByCateory = (req, res) => {
 
 const storeSession = (req, res) => {
     const carts = new cartSchema({
-        carts : req.body.data,
+        carts : JSON.stringify(req.body.data),
         user : req.body.id,
     })
 
