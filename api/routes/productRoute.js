@@ -25,5 +25,7 @@ route.post("/delete", productController.deleteProduct)
 route.post("/search-product", productController.searchProduct)
 route.post("/vendor-product", productController.getProductByOwner)
 route.post("/category", productController.productByCateory)
+route.post("/carts", productController.storeSession)
+route.get("/carts", productController.getSession)
 
 module.exports = route
