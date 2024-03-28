@@ -191,7 +191,7 @@ const storeSession = (req, res) => {
         })
     })
     .catch(error => {
-        res.status(200).json({
+        res.status(500).json({
             error
         })
     })
@@ -206,7 +206,7 @@ const getSession = (req, res) => {
         })
     })
     .catch(error => {
-        res.status(200).json({
+        res.status(500).json({
             error
         })
     })
