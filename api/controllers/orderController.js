@@ -1,3 +1,4 @@
+const cartSchema = require("../model/cartSchema");
 const orderSchema = require("../model/orderSchema")
 const userSchema = require("../model/userSchema")
 var nodemailer = require('nodemailer');
@@ -92,12 +93,17 @@ const createOrder = (req, res) => {
 
     order.save()
     .then(data => {
-        res.status(200).json({
-            message : "order created successfully",
-            data,
+        cartSchema.findByIdAndDelete({_id : req.body.cart_id})
+        .then(data => {
+             res.status(200).json({
+                 message : "carts deleted successfully",
+             })
         })
-        sentIt(req, res, "",  req.body.orderBy,  req.body.product,  req.body.owner, "user" )
-        sentIt(req, res, "",  req.body.orderBy,  req.body.product,  req.body.owner, "vendor" )
+        .catch(err => {
+            res.status(500).json({
+                error : err
+            })
+        })
     })
     .catch( err => {
         res.status(500).json({

@@ -212,6 +212,21 @@ const getSession = (req, res) => {
     })
 };
 
+const deleteSingleCart = (req, res) => {
+    cartSchema.findByIdAndDelete({_id : req.body.id})
+    .then(data => {
+         res.status(200).json({
+             message : "cart deleted successfully",
+             data
+         })
+    })
+    .catch(err => {
+     res.status(500).json({
+         error : err
+     })
+    })
+}
+
 
 
 module.exports = {
@@ -224,4 +239,5 @@ module.exports = {
     productByCateory,
     getSession,
     storeSession,
+    deleteSingleCart,
 }
